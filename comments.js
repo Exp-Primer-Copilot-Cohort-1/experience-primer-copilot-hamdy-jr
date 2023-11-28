@@ -1,37 +1,75 @@
-// Create web service
-// 1. Get comments by id
-// 2. Get comments by user id
-// 3. Create comment
-// 4. Update comment
-// 5. Delete comment
-// 6. Get all comments
+// Create Web Service
+// Date: 10/19/2018
+// Programmer: Phil Graham
 
-// Import express
+// Import Modules
 const express = require("express");
-// Import router
 const router = express.Router();
-// Import model
+
+// Import Models
 const Comment = require("../models/comment");
-// Import controller
-const commentController = require("../controllers/commentController");
 
+// Web Service
 // Get all comments
-router.get("/", commentController.get_all_comments);
+router.get("/", (req, res) => {
+  Comment.find({}, (err, comments) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(comments);
+    }
+  });
+});
 
-// Get comment by id
-router.get("/:commentId", commentController.get_comment_by_id);
+// Get a comment by id
+router.get("/:id", (req, res) => {
+  Comment.findById(req.params.id, (err, comment) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(comment);
+    }
+  });
+});
 
-// Get comment by user id
-router.get("/user/:userId", commentController.get_comment_by_user_id);
+// Add a comment
+router.post("/", (req, res) => {
+  const comment = new Comment(req.body);
+  comment.save((err, comment) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(201).json(comment);
+    }
+  });
+});
 
-// Create comment
-router.post("/", commentController.create_comment);
+// Update an existing comment
+router.put("/:id", (req, res) => {
+  Comment.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true },
+    (err, comment) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(200).json(comment);
+      }
+    }
+  );
+});
 
-// Update comment
-router.patch("/:commentId", commentController.update_comment);
+// Delete a comment
+router.delete("/:id", (req, res) => {
+  Comment.findByIdAndRemove(req.params.id, (err, comment) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).json(comment);
+    }
+  });
+});
 
-// Delete comment
-router.delete("/:commentId", commentController.delete_comment);
-
-// Export module
+// Export Module
 module.exports = router;
