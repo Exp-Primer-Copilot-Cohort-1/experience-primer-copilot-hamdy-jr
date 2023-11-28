@@ -1,14 +1,16 @@
 // Create wev service
-// Export router
 
 const express = require("express");
 const router = express.Router();
 const commentController = require("../controllers/commentController");
 
-router.get("/", commentController.index);
-router.post("/create", commentController.create);
-router.get("/:id", commentController.show);
-router.put("/:id/update", commentController.update);
-router.delete("/:id/delete", commentController.delete);
+router.get("/list", commentController.comment_list);
+router.get("/create", commentController.comment_create_get);
+router.post("/create", commentController.comment_create_post);
+router.get("/:id/delete", commentController.comment_delete_get);
+router.post("/:id/delete", commentController.comment_delete_post);
+router.get("/:id/update", commentController.comment_update_get);
+router.post("/:id/update", commentController.comment_update_post);
+router.get("/:id", commentController.comment_detail);
 
 module.exports = router;
